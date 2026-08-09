@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prediction Result | Smart Disaster Response</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <header class="topbar">
+        <div class="container topbar-inner">
+            <div class="brand">Smart Disaster</div>
+            <nav class="nav-links">
+                <a href="/">Home</a>
+                <a href="/predict">Predict</a>
+                <a href="/dashboard">Dashboard</a>
+                <a href="/about">About</a>
+                <a href="/logout">Log Out</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container page-body">
+        <section class="section-header">
+            <h1>Prediction Result</h1>
+            <p>Review the disaster priority level and recommended relief plan.</p>
+        </section>
+
+        <div class="result-grid">
+            <div class="result-card result-summary {{ priority|lower }}">
+                <div class="result-title">Disaster Priority Level</div>
+                <div class="priority-badge {{ priority|lower }}">{{ priority }}</div>
+                <div class="result-section">
+                    <h2>Disaster Details</h2>
+                    <p><strong>Type:</strong> {{ disaster_type }}</p>
+                    <p><strong>Location:</strong> {{ location }}</p>
+                    <p><strong>Severity:</strong> {{ severity }}/10</p>
+                    <p><strong>People Affected:</strong> {{ people }}</p>
+                    <p><strong>Infrastructure Damage:</strong> {{ damage }}/10</p>
+                    <p><strong>Accessibility:</strong> {{ accessibility }}/10</p>
+                    <p><strong>Previous Occurrences:</strong> {{ previous }}</p>
+                    <p><strong>Weather Condition:</strong> {{ weather }}</p>
+                </div>
+            </div>
+
+            <div class="result-card resource-card">
+                <div class="result-title">Allocated Resources</div>
+                <ul class="resource-list">
+                    {% for item in resources %}
+                    <li>{{ item }}</li>
+                    {% endfor %}
+                </ul>
+                <div class="result-actions">
+                    <a class="button button-secondary" href="/dashboard">View Dashboard</a>
+                    <a class="button button-primary" href="/predict">Predict Another</a>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

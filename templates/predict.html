@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Predict Disaster | Smart Disaster Response</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <header class="topbar">
+        <div class="container topbar-inner">
+            <div class="brand">Smart Disaster</div>
+            <nav class="nav-links">
+                <a href="/">Home</a>
+                <a href="/predict" class="active">Predict</a>
+                <a href="/dashboard">Dashboard</a>
+                <a href="/about">About</a>
+                <a href="/logout">Log Out</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container page-body">
+        <section class="section-header">
+            <h1>Disaster Information</h1>
+            <p>Enter incident details for immediate priority estimation and resource allocation.</p>
+        </section>
+
+        <form action="/predict_disaster" method="post" class="form-grid">
+            <div class="form-group">
+                <label for="disaster_type">Disaster Type</label>
+                <select id="disaster_type" name="disaster_type" required>
+                    <option>Flood</option>
+                    <option>Cyclone</option>
+                    <option>Earthquake</option>
+                    <option>Fire</option>
+                    <option>Landslide</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="location">Location</label>
+                <input id="location" name="location" type="text" placeholder="City, region" required>
+            </div>
+
+            <div class="form-group">
+                <label for="severity">Severity (1-10)</label>
+                <input id="severity" name="severity" type="number" min="1" max="10" value="5" required>
+            </div>
+
+            <div class="form-group">
+                <label for="people">People Affected</label>
+                <input id="people" name="people" type="number" min="0" value="500" required>
+            </div>
+
+            <div class="form-group">
+                <label for="damage">Infrastructure Damage (1-10)</label>
+                <input id="damage" name="damage" type="number" min="1" max="10" value="5" required>
+            </div>
+
+            <div class="form-group">
+                <label for="accessibility">Accessibility (1-10)</label>
+                <input id="accessibility" name="accessibility" type="number" min="1" max="10" value="5" required>
+            </div>
+
+            <div class="form-group">
+                <label for="previous">Previous Occurrences</label>
+                <input id="previous" name="previous" type="number" min="0" value="0" required>
+            </div>
+
+            <div class="form-group">
+                <label for="weather">Weather Condition</label>
+                <select id="weather" name="weather" required>
+                    <option>Clear</option>
+                    <option>Rainy</option>
+                    <option>Stormy</option>
+                    <option>Snowy</option>
+                    <option>Windy</option>
+                </select>
+            </div>
+
+            <div class="form-footer" colspan="2">
+                <button class="button button-primary" type="submit">Predict Priority & Allocate Resources</button>
+            </div>
+        </form>
+    </main>
+</body>
+</html>

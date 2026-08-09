@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | Smart Disaster Response</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <!-- Leaflet Map Library -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+</head>
+<body>
+    <header class="topbar">
+        <div class="container topbar-inner">
+            <div class="brand">Smart Disaster</div>
+            <nav class="nav-links">
+                <a href="/">Home</a>
+                <a href="/predict">Predict</a>
+                <a href="/dashboard" class="active">Dashboard</a>
+                <a href="/about">About</a>
+                <a href="/logout">Log Out</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container page-body">
+        <section class="section-header">
+            <h1>Dashboard</h1>
+            <p>Monitor active incidents, critical alerts, and resources allocated.</p>
+        </section>
+
+        <!-- System Status Section -->
+        <div class="system-status">
+            <div class="status-item">
+                <div class="status-label">Open Incidents</div>
+                <div class="status-value" id="open-incidents">{{ stats.open_incidents }}</div>
+            </div>
+            <div class="status-item">
+                <div class="status-label">Available Resources</div>
+                <div class="status-value" id="available-resources">{{ stats.available_resources }}</div>
+            </div>
+            <div class="status-item">
+                <div class="status-label">Last Refreshed</div>
+                <div class="status-value status-time" id="last-refreshed">{{ stats.last_refreshed }}</div>
+            </div>
+        </div>
+
+        <!-- Tab Navigation -->
+        <div class="dashboard-tabs">
+            <button class="tab-button active" data-tab="live-map">Live Map</button>
+            <button class="tab-button" data-tab="ranked-incidents">Ranked Incidents</button>
+            <button class="tab-button" data-tab="run-allocation">Run Allocation</button>
+            <button class="tab-button" data-tab="add-data">Add Data</button>
+            <button class="tab-button" data-tab="manage-data">Manage Data</button>
+        </div>
+
+        <!-- Tab Content -->
+        <div class="dashboard-content">
+            <!-- Live Map Tab -->
+            <div class="tab-content active" id="live-map">
+                <div id="map" style="height: 600px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"></div>
+            </div>
+
+            <!-- Ranked Incidents Tab -->
+            <div class="tab-content" id="ranked-incidents">
+                <div class="table-card">
+                    <div class="table-header">
+                        <h2>Incidents Ranked by Urgency</h2>
+                    </div>
+                    <div class="table-wrapper">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Location</th>
+                                    <th>Type</th>
+                                    <th>Severity</th>
+                                    <th>People Affected</th>
+                                    <th>Urgency Score</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="incidents-tbody">
+                                <tr><td colspan="6" class="empty-cell">No incidents recorded</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Run Allocation Tab -->
+            <div class="tab-content" id="run-allocation">
+                <div class="allocation-section">
+                    <div class="allocation-card">
+                        <h2>Run the Allocation Engine</h2>
+                        <p>This matches each open incident (most urgent first) to the nearest available resource of a relevant type.</p>
+                        <button class="button button-primary" id="run-allocation-btn">Run Allocation Now</button>
+                    </div>
+
+                    <div class="table-card">
+                        <div class="table-header">
+                            <h2>Current Open Incidents</h2>
+                        </div>
+                        <div class="table-wrapper">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Location</th>
+                                        <th>Type</th>
+                                        <th>Severity</th>
+                                        <th>People</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="run-incidents-tbody">
+                                    <tr><td colspan="5" class="empty-cell">No open incidents available</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="table-card">
+                        <div class="table-header">
+                            <h2>Available Resources</h2>
+                        </div>
+                        <div class="table-wrapper">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Location</th>
+                                        <th>Type</th>
+                                        <th>Quantity</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="run-resources-tbody">
+                                    <tr><td colspan="4" class="empty-cell">No resources available</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="table-card">
+                        <div class="table-header">
+                            <h2>Allocation History</h2>
+                        </div>
+                        <div class="table-wrapper">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Incident</th>
+                                        <th>Resource Type</th>
+                                        <th>Resource Location</th>
+                                        <th>Urgency Score</th>
+                                        <th>Distance (km)</th>
+                                        <th>Allocated At</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="allocation-tbody">
+                                    <tr><td colspan="6" class="empty-cell">No allocations yet</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Add Data Tab -->
+            <div class="tab-content" id="add-data">
+                <div class="add-data-section">
+                    <!-- Report New Incident Form -->
+                    <div class="form-card">
+                        <h2>Report a New Incident</h2>
+                        <form id="incident-form" class="add-form">
+                            <div class="form-group">
+                                <label for="incident-location">Location Name</label>
+                                <input type="text" id="incident-location" placeholder="" required>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="incident-type">Disaster Type</label>
+                                    <select id="incident-type" required>
+                                        <option value="">Select Type</option>
+                                        <option value="Flood">Flood</option>
+                                        <option value="Cyclone">Cyclone</option>
+                                        <option value="Earthquake">Earthquake</option>
+                                        <option value="Fire">Fire</option>
+                                        <option value="Landslide">Landslide</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="incident-severity">Severity (1-10)</label>
+                                    <input type="number" id="incident-severity" min="1" max="10" value="5" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="incident-people">People Affected (estimate)</label>
+                                <input type="number" id="incident-people" min="0" value="100" required>
+                            </div>
+                            <button type="submit" class="button button-primary">Add Incident</button>
+                        </form>
+                    </div>
+
+                    <!-- Add Resource Form -->
+                    <div class="form-card">
+                        <h2>Add a New Resource</h2>
+                        <form id="resource-form" class="add-form">
+                            <div class="form-group">
+                                <label for="resource-location">Resource Location</label>
+                                <input type="text" id="resource-location" placeholder="" required>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="resource-type">Resource Type</label>
+                                    <select id="resource-type" required>
+                                        <option value="">Select Type</option>
+                                        <option value="Rescue Team">Rescue Team</option>
+                                        <option value="Food Kit">Food Kit</option>
+                                        <option value="Ambulance">Ambulance</option>
+                                        <option value="Shelter">Shelter</option>
+                                        <option value="Water Bottles">Water Bottles</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="resource-quantity">Quantity</label>
+                                    <input type="number" id="resource-quantity" min="1" value="10" required>
+                                </div>
+                            </div>
+                            <button type="submit" class="button button-primary">Add Resource</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Manage Data Tab -->
+            <div class="tab-content" id="manage-data">
+                <div class="manage-data-section">
+                    <!-- Incidents List -->
+                    <div class="data-management-card">
+                        <h2>Manage Incidents</h2>
+                        <div class="table-wrapper">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Location</th>
+                                        <th>Type</th>
+                                        <th>Severity</th>
+                                        <th>People Affected</th>
+                                        <th>Status</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="manage-incidents-tbody">
+                                    <tr><td colspan="6" class="empty-cell">No incidents to manage</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Resources List -->
+                    <div class="data-management-card">
+                        <h2>Manage Resources</h2>
+                        <div class="table-wrapper">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Location</th>
+                                        <th>Type</th>
+                                        <th>Quantity</th>
+                                        <th>Status</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="manage-resources-tbody">
+                                    <tr><td colspan="5" class="empty-cell">No resources available</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Original Stats Section (Preserved) -->
+        <div class="stats-grid">
+            <div class="stat-card stat-total">
+                <span class="stat-icon">☁</span>
+                <span class="stat-value">{{ stats.total_disasters }}</span>
+                <span class="stat-label">Total Disasters</span>
+            </div>
+            <div class="stat-card stat-critical">
+                <span class="stat-icon">⚠️</span>
+                <span class="stat-value">{{ stats.critical_count }}</span>
+                <span class="stat-label">Critical</span>
+            </div>
+            <div class="stat-card stat-high">
+                <span class="stat-icon">⬆️</span>
+                <span class="stat-value">{{ stats.high_count }}</span>
+                <span class="stat-label">High</span>
+            </div>
+            <div class="stat-card stat-medium">
+                <span class="stat-icon">⚡</span>
+                <span class="stat-value">{{ stats.medium_count }}</span>
+                <span class="stat-label">Medium</span>
+            </div>
+            <div class="stat-card stat-low">
+                <span class="stat-icon">✅</span>
+                <span class="stat-value">{{ stats.low_count }}</span>
+                <span class="stat-label">Low</span>
+            </div>
+            <div class="stat-card stat-success">
+                <span class="stat-icon">📦</span>
+                <span class="stat-value">{{ stats.allocation_rate }}%</span>
+                <span class="stat-label">Resources Allocated</span>
+            </div>
+        </div>
+
+        <div class="table-card">
+            <div class="table-header">
+                <h2>Latest 5 Disaster Reports</h2>
+            </div>
+            {% if reports %}
+            <table class="report-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Type</th>
+                        <th>Location</th>
+                        <th>Severity</th>
+                        <th>Priority</th>
+                        <th>People Affected</th>
+                        <th>Resources</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for report in reports %}
+                    <tr>
+                        <td>{{ loop.index }}</td>
+                        <td>{{ report.type }}</td>
+                        <td>{{ report.location }}</td>
+                        <td>{{ report.severity }}</td>
+                        <td class="priority-{{ report.priority|lower }}">{{ report.priority }}</td>
+                        <td>{{ report.people }}</td>
+                        <td>{{ report.resources }}</td>
+                        <td>{{ report.date }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="empty-state">
+                <p>No prediction has been submitted yet.</p>
+                <a class="button button-primary" href="/predict">Make a prediction</a>
+            </div>
+            {% endif %}
+        </div>
+    </main>
+
+    <!-- Data storage for JavaScript -->
+    <div id="app-data" 
+         data-incidents='{{ incidents | safe }}' 
+         data-resources='{{ resources | safe }}' 
+         data-allocation-history='{{ allocation_history | safe }}'
+         style="display: none;"></div>
+
+    <script>
+        // Data from template
+        let incidents = [];
+        let resources = [];
+        let allocationHistory = [];
+        let map = null;
+
+        // Load data from data attributes
+        function loadAppData() {
+            const appData = document.getElementById('app-data');
+            try {
+                incidents = JSON.parse(appData.getAttribute('data-incidents') || '[]');
+                resources = JSON.parse(appData.getAttribute('data-resources') || '[]');
+                allocationHistory = JSON.parse(appData.getAttribute('data-allocation-history') || '[]');
+            } catch (e) {
+                console.error('Error parsing app data:', e);
+                incidents = [];
+                resources = [];
+                allocationHistory = [];
+            }
+        }
+
+        function clearTemporaryFrontendState() {
+            incidents = [];
+            resources = [];
+            allocationHistory = [];
+            try {
+                sessionStorage.removeItem('smart-disaster-incidents');
+                sessionStorage.removeItem('smart-disaster-resources');
+                sessionStorage.removeItem('smart-disaster-allocationHistory');
+                localStorage.removeItem('smart-disaster-incidents');
+                localStorage.removeItem('smart-disaster-resources');
+                localStorage.removeItem('smart-disaster-allocationHistory');
+            } catch (e) {
+                console.warn('Could not clear browser storage:', e);
+            }
+        }
+
+        // Initialize dashboard
+        async function initDashboard() {
+            clearTemporaryFrontendState();
+            loadAppData();
+            initMap();
+            loadIncidents();
+            await fetchAllocationHistory();
+            loadResources();
+            loadRunAllocationData();
+            attachEventListeners();
+            document.getElementById('incident-form').reset();
+            document.getElementById('resource-form').reset();
+        }
+
+        async function fetchAllocationHistory() {
+            try {
+                const response = await fetch('/api/allocation-history');
+                if (response.ok) {
+                    allocationHistory = await response.json();
+                }
+            } catch (error) {
+                console.error('Unable to load allocation history:', error);
+            }
+            loadAllocationHistory();
+        }
+
+        // Initialize Leaflet Map
+        function initMap() {
+            // Start with a neutral world view; do not assume a default city when no data provided.
+            map = L.map('map').setView([0, 0], 2);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors',
+                maxZoom: 19,
+            }).addTo(map);
+            updateMapMarkers();
+        }
+
+        // Update map markers
+        function updateMapMarkers() {
+            if (!map) return;
+            map.eachLayer(layer => {
+                if (layer instanceof L.Marker) {
+                    map.removeLayer(layer);
+                }
+            });
+
+            // Add incident markers (only when valid coordinates are present)
+            incidents.forEach(incident => {
+                if (incident.lat === null || incident.lng === null || incident.lat === undefined || incident.lng === undefined) {
+                    return; // skip markers for incidents without coordinates
+                }
+                const icon = L.divIcon({
+                    className: 'marker-icon incident-marker',
+                    html: '<div style="background-color: #dc2626; color: white; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;">🔴</div>',
+                });
+                L.marker([incident.lat, incident.lng], { icon })
+                    .bindPopup(`<b>${incident.location}</b><br>Type: ${incident.type}<br>Severity: ${incident.severity}<br>People: ${incident.people_affected}`)
+                    .addTo(map);
+            });
+
+            // Add resource markers (only when valid coordinates are present)
+            resources.forEach(resource => {
+                if (resource.lat === null || resource.lng === null || resource.lat === undefined || resource.lng === undefined) {
+                    return; // skip markers for resources without coordinates
+                }
+                const icon = L.divIcon({
+                    className: 'marker-icon resource-marker',
+                    html: '<div style="background-color: #2563eb; color: white; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;">📦</div>',
+                });
+                L.marker([resource.lat, resource.lng], { icon })
+                    .bindPopup(`<b>${resource.location}</b><br>Type: ${resource.type}<br>Quantity: ${resource.quantity}`)
+                    .addTo(map);
+            });
+        }
+
+        // Load and display incidents
+        function loadIncidents() {
+            const tbody = document.getElementById('incidents-tbody');
+            const manageTbody = document.getElementById('manage-incidents-tbody');
+
+            if (incidents.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="empty-cell">No incidents recorded</td></tr>';
+                manageTbody.innerHTML = '<tr><td colspan="6" class="empty-cell">No incidents to manage</td></tr>';
+                return;
+            }
+
+            const sorted = [...incidents].sort((a, b) => (b.urgency_score || 0) - (a.urgency_score || 0));
+
+            tbody.innerHTML = sorted.map(incident => `
+                <tr>
+                    <td>${incident.location}</td>
+                    <td>${incident.type}</td>
+                    <td>${incident.severity}</td>
+                    <td>${incident.people_affected}</td>
+                    <td>${(incident.urgency_score || 0).toFixed(1)}</td>
+                    <td><span class="status-badge status-${incident.status}">${incident.status}</span></td>
+                </tr>
+            `).join('');
+
+            manageTbody.innerHTML = sorted.map(incident => `
+                <tr>
+                    <td>${incident.location}</td>
+                    <td>${incident.type}</td>
+                    <td>${incident.severity}</td>
+                    <td>${incident.people_affected}</td>
+                    <td><span class="status-badge status-${incident.status}">${incident.status}</span></td>
+                    <td><button class="button button-small button-danger" onclick="deleteIncident('${incident.id}')">Delete</button></td>
+                </tr>
+            `).join('');
+        }
+
+        // Load allocation history
+        function loadAllocationHistory() {
+            const tbody = document.getElementById('allocation-tbody');
+
+            if (allocationHistory.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="empty-cell">No allocations yet</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = allocationHistory.map(alloc => `
+                <tr>
+                    <td>${alloc.incident_location}</td>
+                    <td>${alloc.resource_type}</td>
+                    <td>${alloc.resource_location}</td>
+                    <td>${alloc.urgency_score !== undefined ? Number(alloc.urgency_score).toFixed(1) : 'N/A'}</td>
+                    <td>${(alloc.distance_km !== undefined && alloc.distance_km !== null) ? alloc.distance_km + ' km' : 'N/A'}</td>
+                    <td>${alloc.timestamp}</td>
+                </tr>
+            `).join('');
+        }
+
+        // Load resources
+        function loadResources() {
+            const manageTbody = document.getElementById('manage-resources-tbody');
+
+            if (resources.length === 0) {
+                manageTbody.innerHTML = '<tr><td colspan="5" class="empty-cell">No resources available</td></tr>';
+                return;
+            }
+
+            manageTbody.innerHTML = resources.map(resource => `
+                <tr>
+                    <td>${resource.location}</td>
+                    <td>${resource.type}</td>
+                    <td>${resource.quantity}</td>
+                    <td><span class="status-badge status-${resource.status}">${resource.status}</span></td>
+                    <td><button class="button button-small button-danger" onclick="deleteResource('${resource.id}')">Delete</button></td>
+                </tr>
+            `).join('');
+        }
+
+        function loadRunAllocationData() {
+            loadRunIncidents();
+            loadRunResources();
+        }
+
+        function loadRunIncidents() {
+            const tbody = document.getElementById('run-incidents-tbody');
+            const openIncidents = incidents.filter(incident => incident.status === 'open');
+
+            if (openIncidents.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" class="empty-cell">No open incidents available</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = openIncidents.map(incident => `
+                <tr>
+                    <td>${incident.location}</td>
+                    <td>${incident.type}</td>
+                    <td>${incident.severity}</td>
+                    <td>${incident.people_affected}</td>
+                    <td><span class="status-badge status-${incident.status}">${incident.status}</span></td>
+                </tr>
+            `).join('');
+        }
+
+        function loadRunResources() {
+            const tbody = document.getElementById('run-resources-tbody');
+            const availableResources = resources.filter(resource => resource.status === 'available' && resource.quantity > 0);
+
+            if (availableResources.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" class="empty-cell">No resources available</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = availableResources.map(resource => `
+                <tr>
+                    <td>${resource.location}</td>
+                    <td>${resource.type}</td>
+                    <td>${resource.quantity}</td>
+                    <td><span class="status-badge status-${resource.status}">${resource.status}</span></td>
+                </tr>
+            `).join('');
+        }
+
+        // Delete incident
+        async function deleteIncident(id) {
+            if (confirm('Are you sure you want to delete this incident?')) {
+                await fetch(`/api/incidents/${id}`, { method: 'DELETE' });
+                incidents = incidents.filter(i => i.id !== id);
+                loadIncidents();
+                loadRunAllocationData();
+                updateMapMarkers();
+                updateSystemStatus();
+            }
+        }
+
+        // Delete resource
+        async function deleteResource(id) {
+            if (confirm('Are you sure you want to delete this resource?')) {
+                await fetch(`/api/resources/${id}`, { method: 'DELETE' });
+                resources = resources.filter(r => r.id !== id);
+                loadResources();
+                loadRunAllocationData();
+                updateMapMarkers();
+                updateSystemStatus();
+            }
+        }
+
+        // Update system status
+        function updateSystemStatus() {
+            document.getElementById('open-incidents').textContent = incidents.filter(i => i.status === 'open').length;
+            document.getElementById('available-resources').textContent = resources.reduce((sum, r) => sum + ((r.status === 'available') ? (r.quantity || 0) : 0), 0);
+            document.getElementById('last-refreshed').textContent = new Date().toLocaleString();
+        }
+
+        // Attach event listeners
+        function attachEventListeners() {
+            // Tab switching
+            document.querySelectorAll('.tab-button').forEach(button => {
+                button.addEventListener('click', function() {
+                    const tabName = this.getAttribute('data-tab');
+                    switchTab(tabName);
+                });
+            });
+
+            // Forms
+            document.getElementById('incident-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const incident = {
+                    location: document.getElementById('incident-location').value,
+                    type: document.getElementById('incident-type').value,
+                    severity: document.getElementById('incident-severity').value,
+                    people_affected: document.getElementById('incident-people').value,
+                };
+                
+                const response = await fetch('/api/incidents', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(incident)
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    const existingIndex = incidents.findIndex(i => i.id === data.id);
+                    if (existingIndex >= 0) {
+                        incidents[existingIndex] = data;
+                    } else {
+                        incidents.push(data);
+                    }
+                    loadIncidents();
+                    loadRunAllocationData();
+                    updateMapMarkers();
+                    updateSystemStatus();
+                    document.getElementById('incident-form').reset();
+                    alert('Incident added successfully!');
+                }
+            });
+
+            document.getElementById('resource-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const resource = {
+                    location: document.getElementById('resource-location').value,
+                    type: document.getElementById('resource-type').value,
+                    quantity: document.getElementById('resource-quantity').value,
+                };
+                
+                const response = await fetch('/api/resources', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(resource)
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    // Update or add resource by id or by normalized location if the same city was resubmitted.
+                    const normalizedLocation = data.location.trim().toLowerCase();
+                    const existingIndex = resources.findIndex(r => {
+                        return r.id === data.id || r.location.trim().toLowerCase() === normalizedLocation;
+                    });
+                    if (existingIndex >= 0) {
+                        resources[existingIndex] = data;
+                    } else {
+                        resources.push(data);
+                    }
+                    loadResources();
+                    loadRunAllocationData();
+                    updateMapMarkers();
+                    updateSystemStatus();
+                    document.getElementById('resource-form').reset();
+                    alert('Resource added successfully!');
+                }
+            });
+
+            // Run allocation button
+            document.getElementById('run-allocation-btn').addEventListener('click', async () => {
+                const response = await fetch('/api/run-allocation', { method: 'POST' });
+                if (response.ok) {
+                    const data = await response.json();
+                    // Sync client state with server-provided state to avoid mismatches
+                    allocationHistory = Array.isArray(data.allocation_history)
+                        ? JSON.parse(JSON.stringify(data.allocation_history))
+                        : JSON.parse(JSON.stringify(data.allocations || []));
+                    if (Array.isArray(data.incidents)) incidents = JSON.parse(JSON.stringify(data.incidents));
+                    if (Array.isArray(data.resources)) resources = JSON.parse(JSON.stringify(data.resources));
+
+                    loadIncidents();
+                    loadResources();
+                    loadRunAllocationData();
+                    loadAllocationHistory();
+                    updateMapMarkers();
+                    updateSystemStatus();
+                    alert('Allocation completed!');
+                }
+            });
+        }
+
+        // Switch tab
+        function switchTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+            document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+
+            // Refresh map if switching to it
+            if (tabName === 'live-map') {
+                setTimeout(() => {
+                    if (map) map.invalidateSize();
+                }, 100);
+            }
+
+            // Load resources if switching to manage tab
+            if (tabName === 'manage-data') {
+                loadResources();
+            }
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', initDashboard);
+    </script>
+</body>
+</html>
