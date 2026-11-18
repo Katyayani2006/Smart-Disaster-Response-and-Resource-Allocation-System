@@ -12,8 +12,10 @@
             <div class="brand">Smart Disaster</div>
             <nav class="nav-links">
                 <a href="/">Home</a>
-                <a href="/predict">Predict</a>
-                <a href="/dashboard">Dashboard</a>
+                <a href="/sos" style="color: #ef4444; font-weight:700;">Public SOS</a>
+                <a href="/predict">Predict ML</a>
+                <a href="/dashboard">Control Dashboard</a>
+                <a href="/export-report" target="_blank">Official Report</a>
                 <a href="/about">About</a>
                 <a href="/logout">Log Out</a>
             </nav>
@@ -34,13 +36,46 @@
                     <h2>Disaster Details</h2>
                     <p><strong>Type:</strong> {{ disaster_type }}</p>
                     <p><strong>Location:</strong> {{ location }}</p>
-                    <p><strong>Severity:</strong> {{ severity }}/10</p>
+                    <p><strong>Severity:</strong> {{ severity }}/100</p>
                     <p><strong>People Affected:</strong> {{ people }}</p>
-                    <p><strong>Infrastructure Damage:</strong> {{ damage }}/10</p>
-                    <p><strong>Accessibility:</strong> {{ accessibility }}/10</p>
+                    <p><strong>Infrastructure Damage:</strong> {{ damage }}/100</p>
+                    <p><strong>Accessibility:</strong> {{ accessibility }}/100</p>
                     <p><strong>Previous Occurrences:</strong> {{ previous }}</p>
                     <p><strong>Weather Condition:</strong> {{ weather }}</p>
                 </div>
+
+                {% if confidence_breakdown %}
+                <div class="result-section transparency-card">
+                    <h2>Prediction Confidence</h2>
+                    <p class="transparency-note">How sure the model is about this specific prediction.</p>
+                    {% for item in confidence_breakdown %}
+                    <div class="bar-row">
+                        <div class="bar-label">{{ item.label }}</div>
+                        <div class="bar-track">
+                            <div class="bar-fill confidence {% if loop.first %}top{% endif %}"
+                                 style="width: {{ item.confidence }}%;"></div>
+                        </div>
+                        <div class="bar-value">{{ item.confidence }}%</div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                {% if feature_importance %}
+                <div class="result-section transparency-card">
+                    <h2>What Influenced This Prediction</h2>
+                    <p class="transparency-note">Overall weight the trained model places on each input, learned from the training data.</p>
+                    {% for item in feature_importance %}
+                    <div class="bar-row">
+                        <div class="bar-label">{{ item.label }}</div>
+                        <div class="bar-track">
+                            <div class="bar-fill importance" style="width: {{ item.importance }}%;"></div>
+                        </div>
+                        <div class="bar-value">{{ item.importance }}%</div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
             </div>
 
             <div class="result-card resource-card">

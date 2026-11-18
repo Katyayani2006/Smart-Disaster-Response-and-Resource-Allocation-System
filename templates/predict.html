@@ -12,10 +12,17 @@
             <div class="brand">Smart Disaster</div>
             <nav class="nav-links">
                 <a href="/">Home</a>
-                <a href="/predict" class="active">Predict</a>
-                <a href="/dashboard">Dashboard</a>
+                <a href="/sos" style="color: #ef4444; font-weight:700;">Public SOS</a>
+                <a href="/predict" class="active">Predict ML</a>
+                <a href="/dashboard">Control Dashboard</a>
+                <a href="/export-report" target="_blank">Official Report</a>
                 <a href="/about">About</a>
+                {% if session.username %}
+                <a href="/dashboard" title="Logged in role">{{ session.username }} ({{ session.role }})</a>
                 <a href="/logout">Log Out</a>
+                {% else %}
+                <a href="/login">Login</a>
+                {% endif %}
             </nav>
         </div>
     </header>
@@ -25,6 +32,10 @@
             <h1>Disaster Information</h1>
             <p>Enter incident details for immediate priority estimation and resource allocation.</p>
         </section>
+
+        {% if error %}
+        <div class="alert alert-danger">{{ error }}</div>
+        {% endif %}
 
         <form action="/predict_disaster" method="post" class="form-grid">
             <div class="form-group">
@@ -79,7 +90,7 @@
                 </select>
             </div>
 
-            <div class="form-footer" colspan="2">
+            <div class="form-footer">
                 <button class="button button-primary" type="submit">Predict Priority & Allocate Resources</button>
             </div>
         </form>

@@ -1,0 +1,16 @@
+[
+  {
+    "id": "officer-1",
+    "name": "Duty Officer (Night Shift)",
+    "phone": "+917682963627",
+    "sms": false,
+    "whatsapp": true
+  },
+  {
+    "id": "officer-2",
+    "name": "District Control Room",
+    "phone": "+91XXXXXXXXXX",
+    "sms": true,
+    "whatsapp": false
+  }
+]

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | Smart Disaster Response</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <header class="topbar">
+        <div class="container topbar-inner">
+            <div class="brand">Smart Disaster</div>
+            <nav class="nav-links">
+                <a href="/">Home</a>
+                <a href="/about">About</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container page-body">
+        <section class="section-header">
+            <h1>Officer Login</h1>
+            <p>Sign in to access the operational dashboard and resource allocation tools.</p>
+        </section>
+
+        <div class="result-grid">
+            <div class="result-card" style="max-width: 420px;">
+                {% if error %}
+                <div class="alert alert-danger">{{ error }}</div>
+                {% endif %}
+
+                <form class="add-form" method="POST" action="/login">
+                    <div class="form-group">
+                        <label for="username">Username</label>
+                        <input type="text" id="username" name="username" required autofocus>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" name="password" required>
+                    </div>
+                    <button type="submit" class="button button-primary">Log In</button>
+                </form>
+
+                <p class="transparency-note" style="margin-top: 20px;">
+                    Demo accounts &mdash; admin / admin123, officer1 / officer123, viewer1 / viewer123.
+                    Change these before any real deployment.
+                </p>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

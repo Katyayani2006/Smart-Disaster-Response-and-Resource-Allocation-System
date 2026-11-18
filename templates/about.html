@@ -3,8 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>About | Smart Disaster Response</title>
+    <title>About | Smart Disaster Emergency Response System</title>
     <link rel="stylesheet" href="/static/css/style.css">
+    <style>
+        .about-card {
+            background: #fff;
+            padding: 24px 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+            margin-bottom: 24px;
+            border-left: 4px solid #0284c7;
+        }
+        .about-card h2 {
+            margin-top: 0;
+            color: #0f172a;
+            font-size: 1.3rem;
+        }
+        .tech-pill {
+            display: inline-block;
+            background: #f1f5f9;
+            color: #334155;
+            padding: 4px 12px;
+            border-radius: 16px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin: 4px 4px 4px 0;
+        }
+    </style>
 </head>
 <body>
     <header class="topbar">
@@ -12,27 +37,83 @@
             <div class="brand">Smart Disaster</div>
             <nav class="nav-links">
                 <a href="/">Home</a>
-                <a href="/predict">Predict</a>
-                <a href="/dashboard">Dashboard</a>
+                <a href="/sos" style="color: #ef4444; font-weight:700;">Public SOS</a>
+                <a href="/predict">Predict ML</a>
+                <a href="/dashboard">Control Dashboard</a>
+                <a href="/export-report" target="_blank">Official Report</a>
                 <a href="/about" class="active">About</a>
+                {% if session.username %}
+                <a href="/dashboard" title="Logged in role">{{ session.username }} ({{ session.role }})</a>
                 <a href="/logout">Log Out</a>
+                {% else %}
+                <a href="/login">Login</a>
+                {% endif %}
             </nav>
         </div>
     </header>
 
-    <main class="container page-body">
+    <main class="container page-body" style="max-width: 900px; margin-top: 30px;">
         <section class="section-header">
-            <h1>About Smart Disaster Response</h1>
-            <p>Rapidly predict incident severity, prioritize emergency response, and allocate relief resources.</p>
+            <h1>About Smart Disaster Emergency Response System</h1>
+            <p>
+                A practical, state-level triage and dynamic resource allocation platform designed to streamline emergency command operations during floods, cyclones, and structural disasters.
+            </p>
         </section>
 
-        <div class="about-card">
-            <h2>How it works</h2>
-            <p>Use the Predict page to submit disaster details. The app then analyzes severity, infrastructure damage, accessibility, and historical occurrences to recommend a response priority.</p>
-            <p>Higher priority events receive more rescue teams, food, medical support, and supplies. The Dashboard gives a quick view of incident distribution and resource planning.</p>
+        <div class="about-card" style="border-left-color: #ef4444;">
+            <h2>1. Public Citizen Emergency SOS Portal (`/sos`)</h2>
+            <p>
+                Allows disaster-affected citizens to lodge emergency distress alerts directly without authentication. Captures location, disaster type, casualty estimates, and specific help requirements. Each distress call generates a unique tracking code (e.g. <code>SOS-A8F3B1</code>) and automatically resolution coordinates for live map visualization.
+            </p>
+        </div>
 
-            <h2>Purpose</h2>
-            <p>This system is designed to support emergency planning teams, disaster response coordinators, and local management authorities with fast, actionable insights.</p>
+        <div class="about-card">
+            <h2>2. Machine Learning Priority Prediction (`/predict`)</h2>
+            <p>
+                Every incident is evaluated by a trained <strong>Random Forest Classifier</strong> model based on five key disaster parameters: severity (1–10 scale), affected population, infrastructure damage (1–10), site accessibility (1–10), and historical disaster frequency. The model outputs priority levels — <strong>CRITICAL</strong>, <strong>HIGH</strong>, <strong>MEDIUM</strong>, or <strong>LOW</strong> — complete with probability confidence scores (<code>predict_proba()</code>) and global feature importance.
+            </p>
+        </div>
+
+        <div class="about-card">
+            <h2>3. Dynamic Urgency Scoring & Alias Normalization</h2>
+            <p>
+                Combines predicted priority with casualty count and severity into a single 0–100 urgency score. Crucially, the system includes a <strong>Location Alias Engine</strong> that normalizes common spelling variants (e.g., <em>Balesore &rarr; Baleswar</em>, <em>Kendrapada &rarr; Kendrapara</em>) so data inaccuracies don't disrupt spatial algorithms.
+            </p>
+        </div>
+
+        <div class="about-card">
+            <h2>4. Spatial Haversine Resource Allocation Engine</h2>
+            <p>
+                When command officers trigger allocation, the engine ranks open incidents by urgency score, then computes exact Great-Circle distance to available response depots using the <strong>Haversine Formula</strong>:
+                <br>
+                $$d = 2R \arcsin\left(\sqrt{\sin^2\left(\frac{\Delta \phi}{2}\right) + \cos(\phi_1)\cos(\phi_2)\sin^2\left(\frac{\Delta \lambda}{2}\right)}\right)$$
+                Resource types (Inflatable Boats, Hydraulic Cutters, MFR Kits, Water Purifiers) are matched from the nearest available depot, preventing double-allocation and reducing transit delays.
+            </p>
+        </div>
+
+        <div class="about-card" style="border-left-color: #059669;">
+            <h2>5. Government Dispatch Audit Log & PDF Exporter (`/export-report`)</h2>
+            <p>
+                Provides complete transparency for government audits. Generates official printable dispatch receipts summarizing active emergencies, depot inventory readiness, allocated quantities, Haversine transit distances in km, and authorization signature blocks.
+            </p>
+        </div>
+
+        <div class="about-card">
+            <h2>6. Multi-Role Security & System Architecture</h2>
+            <p>
+                - <strong>Admin / Officer (`admin` / `officer1`)</strong>: Full control to manage inventory, verify reports, execute allocations, and reset sessions.<br>
+                - <strong>Field Viewer (`viewer1`)</strong>: Operational readiness monitoring.<br>
+                - <strong>Public Citizen</strong>: Unauthenticated SOS distress reporting.
+            </p>
+            <div style="margin-top: 16px;">
+                <span class="tech-pill">Python 3</span>
+                <span class="tech-pill">Flask REST API</span>
+                <span class="tech-pill">scikit-learn (Random Forest)</span>
+                <span class="tech-pill">pandas Data Pipeline</span>
+                <span class="tech-pill">Haversine Spatial Math</span>
+                <span class="tech-pill">Leaflet.js + OpenStreetMap</span>
+                <span class="tech-pill">Nominatim Geocoding</span>
+            </div>
         </div>
     </main>
 </body>

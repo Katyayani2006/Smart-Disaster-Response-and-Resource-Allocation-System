@@ -15,9 +15,11 @@
             </div>
             <nav class="nav-links">
                 <a href="/">Home</a>
-                <a href="/predict">Predict</a>
-                <a href="/dashboard">Dashboard</a>
-                <a href="/about">About</a>
+                <a href="/sos" style="color: #ef4444; font-weight:700;">Public SOS</a>
+                <a href="/predict">Predict ML</a>
+                <a href="/dashboard">Control Dashboard</a>
+                <a href="/export-report" target="_blank">Official Report</a>
+                <a href="/about">About System</a>
                 <a href="/logout">Log Out</a>
             </nav>
         </div>
@@ -27,9 +29,13 @@
         <div class="hero-overlay"></div>
         <div class="container hero-content">
             <div class="hero-text">
-                <h1>Smart Disaster Response & Resource Allocation System</h1>
-                <p class="hero-copy">Submit disaster details, verify priority, and receive AI-driven recommendations for emergency response resources in one dashboard-driven interface.</p>
-                <a class="button button-primary" href="/predict">Get Started</a>
+                <h1>Smart Disaster Response & Dynamic Resource Allocation System</h1>
+                <p class="hero-copy">Practical State Emergency Management Platform for District & Regional Operations. Real-time ML priority triage, citizen emergency SOS dispatch, and automated rapid response gear allocation.</p>
+                <div style="display:flex; gap:12px; flex-wrap:wrap;">
+                    <a class="button" style="background:#ef4444; color:#fff; font-weight:700;" href="/sos">Submit Public SOS Distress Alert</a>
+                    <a class="button button-primary" href="/dashboard">Open Control Dashboard</a>
+                    <a class="button button-secondary" href="/predict">ML Severity Predictor</a>
+                </div>
             </div>
             <img src="/static/images/disaster.jpg" alt="Disaster response illustration" class="hero-image">
         </div>

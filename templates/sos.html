@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Citizen Emergency SOS | Smart Disaster Response</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <style>
+        .sos-hero {
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            color: #fff;
+            padding: 40px 20px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .sos-badge {
+            background: #ef4444;
+            color: #fff;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            display: inline-block;
+            margin-bottom: 12px;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.6; }
+            100% { opacity: 1; }
+        }
+        .sos-card {
+            background: #fff;
+            padding: 32px;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            border-top: 4px solid #ef4444;
+        }
+        .success-box {
+            background: #ecfdf5;
+            border: 2px solid #10b981;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            color: #065f46;
+        }
+        .sos-code {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #047857;
+            letter-spacing: 2px;
+        }
+    </style>
+</head>
+<body>
+    <header class="topbar">
+        <div class="container topbar-inner">
+            <div class="brand">
+                <span style="color:#ef4444; font-weight:900;">[SOS]</span> Emergency Command
+            </div>
+            <nav class="nav-links">
+                <a href="/">Home</a>
+                <a href="/sos" class="active">Public Emergency SOS</a>
+                <a href="/predict">ML Predictor</a>
+                <a href="/dashboard">Control Dashboard</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container page-body" style="max-width: 800px; margin-top: 30px;">
+        <div class="sos-hero">
+            <span class="sos-badge">EMERGENCY CITIZEN HELPLINE</span>
+            <h1 style="margin: 6px 0 12px 0;">Submit Urgent Disaster SOS Alert</h1>
+            <p style="color: #cbd5e1; font-size: 1.05rem;">
+                Direct interface to the State Emergency Operations Center (SEOC) and District Control Room. Submit your location immediately for priority deployment.
+            </p>
+        </div>
+
+        {% if success %}
+        <div class="success-box">
+            <h2 style="margin-top: 0; color: #047857;">Distress Alert Lodged Successfully!</h2>
+            <p>Your SOS has been routed directly to the Emergency Command Center for immediate triage.</p>
+            <div style="margin: 16px 0;">
+                <div>Your Tracking Code:</div>
+                <div class="sos-code">{{ sos_code }}</div>
+            </div>
+            <ul>
+                <li><strong>Location:</strong> {{ incident.location }}</li>
+                <li><strong>Priority Assigned:</strong> <span class="badge badge-critical">{{ incident.priority }}</span></li>
+                <li><strong>Estimated Urgency Score:</strong> {{ incident.urgency_score }}/100</li>
+                <li><strong>Status:</strong> Route-matching nearest emergency response depot...</li>
+            </ul>
+
+            {% if alert_status %}
+            <div style="margin-top: 16px; padding: 14px 16px; border-radius: 10px; background: {{ '#fff7ed' if alert_status.mode == 'simulation' else '#ecfdf5' }}; border: 1px solid {{ '#fdba74' if alert_status.mode == 'simulation' else '#10b981' }};">
+                {% if alert_status.mode == 'simulation' %}
+                    <strong>📟 On-call officers notified (demo/simulation mode).</strong>
+                    <p style="margin: 6px 0 0 0; font-size: 0.92rem;">
+                        SMS/WhatsApp sending is not yet configured with live credentials, so alerts were logged instead of sent over the network.
+                        Configure Twilio in <code>.env</code> to send real messages.
+                    </p>
+                {% elif alert_status.mode == 'live' %}
+                    <strong>📲 On-call officers have been notified via SMS/WhatsApp.</strong>
+                    <p style="margin: 6px 0 0 0; font-size: 0.92rem;">{{ alert_status.sent|length }} alert(s) dispatched.</p>
+                {% else %}
+                    <strong>⚠️ Officer alert could not be confirmed.</strong>
+                    <p style="margin: 6px 0 0 0; font-size: 0.92rem;">Your SOS was still recorded successfully; a technician should check the alert configuration.</p>
+                {% endif %}
+            </div>
+            {% endif %}
+
+            <a href="/sos" class="button button-primary" style="margin-top: 16px;">Submit Another Distress Alert</a>
+        </div>
+        {% else %}
+
+        {% if error %}
+        <div style="background:#fef2f2; color:#991b1b; padding:16px; border-radius:8px; margin-bottom:20px;">
+            {{ error }}
+        </div>
+        {% endif %}
+
+        <div class="sos-card">
+            <h2 style="margin-top:0; color:#1e293b;">Citizen Distress Intake Form</h2>
+            <form method="POST" action="/sos">
+                <div class="form-group" style="margin-bottom: 20px;">
+                    <label style="font-weight:600; display:block; margin-bottom:6px;">Your District / Location *</label>
+                    <input type="text" name="location" placeholder="e.g. Puri, Kendrapara, Cuttack, Baleswar, Jagatsinghpur..." required class="form-input" style="width:100%; padding:12px; border-radius:8px; border:1px solid #cbd5e1;">
+                    <small style="color:#64748b;">Specify town, block, or village location.</small>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 20px;">
+                    <label style="font-weight:600; display:block; margin-bottom:6px;">Emergency / Disaster Type</label>
+                    <select name="disaster_type" class="form-input" style="width:100%; padding:12px; border-radius:8px; border:1px solid #cbd5e1;">
+                        <option value="Cyclone">Cyclone / Heavy Wind Surge</option>
+                        <option value="Flood">Severe Flood / Waterlogging</option>
+                        <option value="Building Collapse">Building Collapse / Trapped under Debris</option>
+                        <option value="Medical Emergency">Mass Medical Emergency</option>
+                    </select>
+                </div>
+
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px;">
+                    <div>
+                        <label style="font-weight:600; display:block; margin-bottom:6px;">Estimated People Trapped/Affected</label>
+                        <input type="number" name="people" value="5" min="1" class="form-input" style="width:100%; padding:12px; border-radius:8px; border:1px solid #cbd5e1;">
+                    </div>
+                    <div>
+                        <label style="font-weight:600; display:block; margin-bottom:6px;">Severity Level (1 to 10)</label>
+                        <input type="number" name="severity" value="8" min="1" max="10" class="form-input" style="width:100%; padding:12px; border-radius:8px; border:1px solid #cbd5e1;">
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 20px;">
+                    <label style="font-weight:600; display:block; margin-bottom:6px;">Contact Phone Number</label>
+                    <input type="text" name="contact" placeholder="e.g. +91 9876543210" class="form-input" style="width:100%; padding:12px; border-radius:8px; border:1px solid #cbd5e1;">
+                </div>
+
+                <div class="form-group" style="margin-bottom: 24px;">
+                    <label style="font-weight:600; display:block; margin-bottom:6px;">Details / Specific Assistance Needed</label>
+                    <textarea name="description" rows="3" placeholder="e.g. Water entering houses up to roof level. Need motor boat rescue immediately." class="form-input" style="width:100%; padding:12px; border-radius:8px; border:1px solid #cbd5e1;"></textarea>
+                </div>
+
+                <button type="submit" class="button" style="background:#ef4444; color:#fff; width:100%; padding:14px; font-weight:700; font-size:1.1rem; border:none; border-radius:8px; cursor:pointer;">
+                    TRANSMIT DISTRESS SOS ALERT TO EMERGENCY COMMAND
+                </button>
+            </form>
+        </div>
+        {% endif %}
+    </main>
+</body>
+</html>

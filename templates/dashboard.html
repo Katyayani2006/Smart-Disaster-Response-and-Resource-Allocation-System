@@ -18,18 +18,25 @@
             <div class="brand">Smart Disaster</div>
             <nav class="nav-links">
                 <a href="/">Home</a>
+                <a href="/sos" style="color: #ef4444; font-weight:700;">Public SOS</a>
                 <a href="/predict">Predict</a>
                 <a href="/dashboard" class="active">Dashboard</a>
+                <a href="/export-report" target="_blank">Official Report</a>
                 <a href="/about">About</a>
+                {% if session.username %}
+                <a href="/dashboard" title="Logged in role">{{ session.username }} ({{ session.role }})</a>
                 <a href="/logout">Log Out</a>
+                {% else %}
+                <a href="/login">Login</a>
+                {% endif %}
             </nav>
         </div>
     </header>
 
     <main class="container page-body">
         <section class="section-header">
-            <h1>Dashboard</h1>
-            <p>Monitor active incidents, critical alerts, and resources allocated.</p>
+            <h1>Disaster Emergency Control Command Dashboard</h1>
+            <p>Monitor active incidents, critical alerts, rapid response unit deployment, and resource allocation.</p>
         </section>
 
         <!-- System Status Section -->
@@ -50,10 +57,10 @@
 
         <!-- Tab Navigation -->
         <div class="dashboard-tabs">
-            <button class="tab-button active" data-tab="live-map">Live Map</button>
+            <button class="tab-button active" data-tab="live-map">Live GIS Map</button>
+            <button class="tab-button" data-tab="run-allocation">Run Allocation Engine</button>
             <button class="tab-button" data-tab="ranked-incidents">Ranked Incidents</button>
-            <button class="tab-button" data-tab="run-allocation">Run Allocation</button>
-            <button class="tab-button" data-tab="add-data">Add Data</button>
+            <button class="tab-button" data-tab="add-resource">Add Resource Stock</button>
             <button class="tab-button" data-tab="manage-data">Manage Data</button>
         </div>
 
@@ -94,9 +101,14 @@
             <div class="tab-content" id="run-allocation">
                 <div class="allocation-section">
                     <div class="allocation-card">
-                        <h2>Run the Allocation Engine</h2>
-                        <p>This matches each open incident (most urgent first) to the nearest available resource of a relevant type.</p>
-                        <button class="button button-primary" id="run-allocation-btn">Run Allocation Now</button>
+                        <h2>Run Strategic Resource Allocation Engine</h2>
+                        <p>Matches each active emergency incident (most urgent first) to the nearest available emergency response depot using Haversine distance optimization.</p>
+                        <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-top: 12px;">
+                            <button class="button button-primary" id="run-allocation-btn">Run Allocation Now</button>
+                            <button class="button" style="background:#0284c7; color:#fff;" id="seed-odraf-btn">Pre-load Emergency Response Data</button>
+                            <a class="button" style="background:#059669; color:#fff; text-decoration:none; display:inline-flex; align-items:center;" href="/export-report" target="_blank">Export PDF / Print Report</a>
+                            <button class="button button-secondary" id="new-session-btn">Start New Session</button>
+                        </div>
                     </div>
 
                     <div class="table-card">
@@ -167,55 +179,29 @@
                 </div>
             </div>
 
-            <!-- Add Data Tab -->
-            <div class="tab-content" id="add-data">
-                <div class="add-data-section">
-                    <!-- Report New Incident Form -->
-                    <div class="form-card">
-                        <h2>Report a New Incident</h2>
-                        <form id="incident-form" class="add-form">
-                            <div class="form-group">
-                                <label for="incident-location">Location Name</label>
-                                <input type="text" id="incident-location" placeholder="" required>
-                            </div>
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label for="incident-type">Disaster Type</label>
-                                    <select id="incident-type" required>
-                                        <option value="">Select Type</option>
-                                        <option value="Flood">Flood</option>
-                                        <option value="Cyclone">Cyclone</option>
-                                        <option value="Earthquake">Earthquake</option>
-                                        <option value="Fire">Fire</option>
-                                        <option value="Landslide">Landslide</option>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label for="incident-severity">Severity (1-10)</label>
-                                    <input type="number" id="incident-severity" min="1" max="10" value="5" required>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="incident-people">People Affected (estimate)</label>
-                                <input type="number" id="incident-people" min="0" value="100" required>
-                            </div>
-                            <button type="submit" class="button button-primary">Add Incident</button>
-                        </form>
-                    </div>
-
+            <!-- Add Resource Stock Tab -->
+            <div class="tab-content" id="add-resource">
+                <div class="add-data-section" style="max-width: 650px; margin: 0 auto;">
                     <!-- Add Resource Form -->
                     <div class="form-card">
-                        <h2>Add a New Resource</h2>
+                        <h2>Add Emergency Resource Stock to Depot</h2>
+                        <p style="color: #64748b; margin-bottom: 20px;">Add or update equipment quantity at depot location for allocation matching.</p>
                         <form id="resource-form" class="add-form">
                             <div class="form-group">
-                                <label for="resource-location">Resource Location</label>
-                                <input type="text" id="resource-location" placeholder="" required>
+                                <label for="resource-location">Depot / Location Name</label>
+                                <input type="text" id="resource-location" placeholder="e.g. Cuttack, Puri, Baleswar, Jharsuguda..." required>
                             </div>
                             <div class="form-row">
                                 <div class="form-group">
-                                    <label for="resource-type">Resource Type</label>
+                                    <label for="resource-type">Equipment / Resource Type</label>
                                     <select id="resource-type" required>
-                                        <option value="">Select Type</option>
+                                        <option value="">Select Resource Type</option>
+                                        <option value="Inflatable Motor Boat">Inflatable Motor Boat</option>
+                                        <option value="Hydraulic Concrete Cutter">Hydraulic Concrete Cutter</option>
+                                        <option value="Medical First Responder (MFR) Kit">Medical First Responder (MFR) Kit</option>
+                                        <option value="High-Tower Inflatable Light">High-Tower Inflatable Light</option>
+                                        <option value="Satellite Communication System">Satellite Communication System</option>
+                                        <option value="Mobile Water Purification Unit">Mobile Water Purification Unit</option>
                                         <option value="Rescue Team">Rescue Team</option>
                                         <option value="Food Kit">Food Kit</option>
                                         <option value="Ambulance">Ambulance</option>
@@ -224,11 +210,11 @@
                                     </select>
                                 </div>
                                 <div class="form-group">
-                                    <label for="resource-quantity">Quantity</label>
+                                    <label for="resource-quantity">Quantity (Units)</label>
                                     <input type="number" id="resource-quantity" min="1" value="10" required>
                                 </div>
                             </div>
-                            <button type="submit" class="button button-primary">Add Resource</button>
+                            <button type="submit" class="button button-primary">Add Resource Stock</button>
                         </form>
                     </div>
                 </div>
@@ -279,6 +265,60 @@
                             </table>
                         </div>
                     </div>
+
+                    <!-- On-Call Officer SMS/WhatsApp Alerts -->
+                    <div class="data-management-card">
+                        <h2>On-Call Officer Alerts (SMS / WhatsApp)</h2>
+                        <p style="color:#64748b; font-size:0.9rem; margin-top:-6px;">
+                            Every new citizen SOS automatically pages the officers below, even outside office hours.
+                            Numbers containing "X" are placeholders and will only simulate alerts (safe for demos).
+                        </p>
+                        <div class="table-wrapper">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Phone</th>
+                                        <th>SMS</th>
+                                        <th>WhatsApp</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="manage-officers-tbody">
+                                    <tr><td colspan="5" class="empty-cell">Loading...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <form id="add-officer-form" style="display:flex; gap:8px; flex-wrap:wrap; margin-top:12px; align-items:center;">
+                            <input type="text" id="officer-name" placeholder="Officer name" required style="flex:1; min-width:140px;">
+                            <input type="text" id="officer-phone" placeholder="+91XXXXXXXXXX" required style="flex:1; min-width:140px;">
+                            <label style="font-size:0.85rem;"><input type="checkbox" id="officer-sms" checked> SMS</label>
+                            <label style="font-size:0.85rem;"><input type="checkbox" id="officer-whatsapp"> WhatsApp</label>
+                            <button type="submit" class="button button-primary">Add Officer</button>
+                        </form>
+                        <div style="margin-top:14px; display:flex; gap:10px; flex-wrap:wrap;">
+                            <button class="button" style="background:#0284c7; color:#fff;" id="send-test-alert-btn">Send Test Alert</button>
+                            <button class="button button-secondary" id="view-alert-log-btn">View Alert Log</button>
+                        </div>
+                        <div id="alert-log-panel" style="display:none; margin-top:14px;">
+                            <div class="table-wrapper">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Time</th>
+                                            <th>Officer</th>
+                                            <th>Channel</th>
+                                            <th>Status</th>
+                                            <th>SOS Code</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="alert-log-tbody">
+                                        <tr><td colspan="5" class="empty-cell">No alerts yet</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -287,32 +327,32 @@
         <div class="stats-grid">
             <div class="stat-card stat-total">
                 <span class="stat-icon">☁</span>
-                <span class="stat-value">{{ stats.total_disasters }}</span>
+                <span class="stat-value" id="stat-total">{{ stats.total_disasters }}</span>
                 <span class="stat-label">Total Disasters</span>
             </div>
             <div class="stat-card stat-critical">
                 <span class="stat-icon">⚠️</span>
-                <span class="stat-value">{{ stats.critical_count }}</span>
+                <span class="stat-value" id="stat-critical">{{ stats.critical_count }}</span>
                 <span class="stat-label">Critical</span>
             </div>
             <div class="stat-card stat-high">
                 <span class="stat-icon">⬆️</span>
-                <span class="stat-value">{{ stats.high_count }}</span>
+                <span class="stat-value" id="stat-high">{{ stats.high_count }}</span>
                 <span class="stat-label">High</span>
             </div>
             <div class="stat-card stat-medium">
                 <span class="stat-icon">⚡</span>
-                <span class="stat-value">{{ stats.medium_count }}</span>
+                <span class="stat-value" id="stat-medium">{{ stats.medium_count }}</span>
                 <span class="stat-label">Medium</span>
             </div>
             <div class="stat-card stat-low">
                 <span class="stat-icon">✅</span>
-                <span class="stat-value">{{ stats.low_count }}</span>
+                <span class="stat-value" id="stat-low">{{ stats.low_count }}</span>
                 <span class="stat-label">Low</span>
             </div>
             <div class="stat-card stat-success">
                 <span class="stat-icon">📦</span>
-                <span class="stat-value">{{ stats.allocation_rate }}%</span>
+                <span class="stat-value" id="stat-allocation-rate">{{ stats.allocation_rate }}%</span>
                 <span class="stat-label">Resources Allocated</span>
             </div>
         </div>
@@ -420,7 +460,7 @@
 
         async function fetchAllocationHistory() {
             try {
-                const response = await fetch('/api/allocation-history');
+                const response = await fetch('/api/allocation-history?session=current');
                 if (response.ok) {
                     allocationHistory = await response.json();
                 }
@@ -510,7 +550,10 @@
                     <td>${incident.severity}</td>
                     <td>${incident.people_affected}</td>
                     <td><span class="status-badge status-${incident.status}">${incident.status}</span></td>
-                    <td><button class="button button-small button-danger" onclick="deleteIncident('${incident.id}')">Delete</button></td>
+                    <td>
+                        ${incident.status === 'unverified' ? `<button class="button button-small button-primary" onclick="verifyIncident('${incident.id}')">Verify</button>` : ''}
+                        <button class="button button-small button-danger" onclick="deleteIncident('${incident.id}')">Delete</button>
+                    </td>
                 </tr>
             `).join('');
         }
@@ -600,35 +643,80 @@
             `).join('');
         }
 
-        // Delete incident
+        // Verify incident (requires officer/admin - enforced server-side)
+        async function verifyIncident(id) {
+            const response = await fetch(`/api/incidents/${id}/verify`, { method: 'POST' });
+            if (response.ok) {
+                const updated = await response.json();
+                const idx = incidents.findIndex(i => i.id === id);
+                if (idx >= 0) incidents[idx] = updated;
+                loadIncidents();
+                loadRunAllocationData();
+                updateSystemStatus();
+            } else if (response.status === 401) {
+                alert('You do not have permission to verify incidents. Please log in as an officer or admin.');
+            } else {
+                alert('Could not verify incident.');
+            }
+        }
+
+        // Delete incident (requires officer/admin - enforced server-side)
         async function deleteIncident(id) {
-            if (confirm('Are you sure you want to delete this incident?')) {
-                await fetch(`/api/incidents/${id}`, { method: 'DELETE' });
+            if (!confirm('Are you sure you want to delete this incident?')) return;
+            const response = await fetch(`/api/incidents/${id}`, { method: 'DELETE' });
+            if (response.ok) {
                 incidents = incidents.filter(i => i.id !== id);
                 loadIncidents();
                 loadRunAllocationData();
                 updateMapMarkers();
                 updateSystemStatus();
+            } else if (response.status === 401) {
+                alert('You do not have permission to delete incidents. Please log in as an officer or admin.');
+            } else {
+                alert('Could not delete incident.');
             }
         }
 
-        // Delete resource
+        // Delete resource (requires officer/admin - enforced server-side)
         async function deleteResource(id) {
-            if (confirm('Are you sure you want to delete this resource?')) {
-                await fetch(`/api/resources/${id}`, { method: 'DELETE' });
+            if (!confirm('Are you sure you want to delete this resource?')) return;
+            const response = await fetch(`/api/resources/${id}`, { method: 'DELETE' });
+            if (response.ok) {
                 resources = resources.filter(r => r.id !== id);
                 loadResources();
                 loadRunAllocationData();
                 updateMapMarkers();
                 updateSystemStatus();
+            } else if (response.status === 401) {
+                alert('You do not have permission to delete resources. Please log in as an officer or admin.');
+            } else {
+                alert('Could not delete resource.');
             }
         }
 
-        // Update system status
+        // Update system status & stats cards
         function updateSystemStatus() {
-            document.getElementById('open-incidents').textContent = incidents.filter(i => i.status === 'open').length;
-            document.getElementById('available-resources').textContent = resources.reduce((sum, r) => sum + ((r.status === 'available') ? (r.quantity || 0) : 0), 0);
-            document.getElementById('last-refreshed').textContent = new Date().toLocaleString();
+            const openCount = incidents.filter(i => i.status === 'open').length;
+            const availableQty = resources.reduce((sum, r) => sum + ((r.status === 'available') ? (r.quantity || 0) : 0), 0);
+            const allocatedQty = allocationHistory.reduce((sum, a) => sum + (Number(a.quantity_allocated) || 0), 0);
+            const totalQty = availableQty + allocatedQty;
+            const allocationRate = totalQty > 0 ? ((allocatedQty / totalQty) * 100).toFixed(1) : '0.0';
+
+            const criticalCount = incidents.filter(i => i.priority === 'CRITICAL').length;
+            const highCount = incidents.filter(i => i.priority === 'HIGH').length;
+            const mediumCount = incidents.filter(i => i.priority === 'MEDIUM').length;
+            const lowCount = incidents.filter(i => i.priority === 'LOW').length;
+
+            if (document.getElementById('open-incidents')) document.getElementById('open-incidents').textContent = openCount;
+            if (document.getElementById('available-resources')) document.getElementById('available-resources').textContent = availableQty;
+            if (document.getElementById('last-refreshed')) document.getElementById('last-refreshed').textContent = new Date().toLocaleString();
+
+            if (document.getElementById('stat-total')) document.getElementById('stat-total').textContent = incidents.length;
+            if (document.getElementById('stat-critical')) document.getElementById('stat-critical').textContent = criticalCount;
+            if (document.getElementById('stat-high')) document.getElementById('stat-high').textContent = highCount;
+            if (document.getElementById('stat-medium')) document.getElementById('stat-medium').textContent = mediumCount;
+            if (document.getElementById('stat-low')) document.getElementById('stat-low').textContent = lowCount;
+            if (document.getElementById('stat-allocation-rate')) document.getElementById('stat-allocation-rate').textContent = `${allocationRate}%`;
         }
 
         // Attach event listeners
@@ -649,6 +737,10 @@
                     type: document.getElementById('incident-type').value,
                     severity: document.getElementById('incident-severity').value,
                     people_affected: document.getElementById('incident-people').value,
+                    // Reported directly by a logged-in officer/admin from this
+                    // dashboard, so it's trusted and skips the citizen
+                    // unverified-report step.
+                    source: 'officer',
                 };
                 
                 const response = await fetch('/api/incidents', {
@@ -706,6 +798,8 @@
                     updateSystemStatus();
                     document.getElementById('resource-form').reset();
                     alert('Resource added successfully!');
+                } else if (response.status === 401) {
+                    alert('You do not have permission to add resources. Please log in as an officer or admin.');
                 }
             });
 
@@ -728,8 +822,168 @@
                     updateMapMarkers();
                     updateSystemStatus();
                     alert('Allocation completed!');
+                } else if (response.status === 401) {
+                    alert('You do not have permission to run allocation. Please log in as an officer or admin.');
                 }
             });
+
+            // Pre-load ODRAF Battalion Data
+            const seedBtn = document.getElementById('seed-odraf-btn');
+            if (seedBtn) {
+                seedBtn.addEventListener('click', async () => {
+                    if (confirm('Pre-load realistic ODRAF Battalion inventory (Inflatable boats, MFR Kits, Concrete Cutters) and active Odisha disaster incidents?')) {
+                        const response = await fetch('/api/seed-odraf-data', { method: 'POST' });
+                        if (response.ok) {
+                            const data = await response.json();
+                            alert(data.message || 'ODRAF Battalion data successfully loaded!');
+                            window.location.reload();
+                        } else if (response.status === 401) {
+                            alert('You do not have permission. Please log in as an officer or admin.');
+                        }
+                    }
+                });
+            }
+
+            // Start new session button
+            document.getElementById('new-session-btn').addEventListener('click', async () => {
+                if (confirm('Start a new session/run? This will clear the allocation history view for the new session while preserving past logs.')) {
+                    const response = await fetch('/api/new-session', { method: 'POST' });
+                    if (response.ok) {
+                        allocationHistory = [];
+                        loadAllocationHistory();
+                        updateSystemStatus();
+                        alert('New session started! Allocation history reset for current run.');
+                    } else if (response.status === 401) {
+                        alert('You do not have permission to start a new session. Please log in as an officer or admin.');
+                    }
+                }
+            });
+
+            // --- On-call officer SMS/WhatsApp alerts ------------------------
+            async function loadOfficers() {
+                const tbody = document.getElementById('manage-officers-tbody');
+                if (!tbody) return;
+                const response = await fetch('/api/officers');
+                if (!response.ok) {
+                    tbody.innerHTML = '<tr><td colspan="5" class="empty-cell">Log in as officer/admin to manage alerts</td></tr>';
+                    return;
+                }
+                const data = await response.json();
+                const officers = data.officers || [];
+                if (officers.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="5" class="empty-cell">No on-call officers added yet</td></tr>';
+                    return;
+                }
+                tbody.innerHTML = officers.map(o => `
+                    <tr>
+                        <td>${o.name}</td>
+                        <td>${o.phone}</td>
+                        <td>${o.sms ? 'Yes' : 'No'}</td>
+                        <td>${o.whatsapp ? 'Yes' : 'No'}</td>
+                        <td><button class="button button-small button-danger delete-officer-btn" data-id="${o.id}">Remove</button></td>
+                    </tr>
+                `).join('');
+                document.querySelectorAll('.delete-officer-btn').forEach(btn => {
+                    btn.addEventListener('click', async () => {
+                        if (!confirm('Remove this officer from the alert list?')) return;
+                        const res = await fetch(`/api/officers/${btn.dataset.id}`, { method: 'DELETE' });
+                        if (res.ok) {
+                            loadOfficers();
+                        } else if (res.status === 401) {
+                            alert('You do not have permission to remove officers. Please log in as an officer or admin.');
+                        }
+                    });
+                });
+            }
+
+            const addOfficerForm = document.getElementById('add-officer-form');
+            if (addOfficerForm) {
+                addOfficerForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const name = document.getElementById('officer-name').value.trim();
+                    const phone = document.getElementById('officer-phone').value.trim();
+                    const sms = document.getElementById('officer-sms').checked;
+                    const whatsapp = document.getElementById('officer-whatsapp').checked;
+                    if (!name || !phone) return;
+                    const response = await fetch('/api/officers', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ name, phone, sms, whatsapp }),
+                    });
+                    if (response.ok) {
+                        addOfficerForm.reset();
+                        document.getElementById('officer-sms').checked = true;
+                        loadOfficers();
+                    } else if (response.status === 401) {
+                        alert('You do not have permission to add officers. Please log in as an officer or admin.');
+                    } else {
+                        alert('Could not add officer. Please check the details and try again.');
+                    }
+                });
+            }
+
+            const testAlertBtn = document.getElementById('send-test-alert-btn');
+            if (testAlertBtn) {
+                testAlertBtn.addEventListener('click', async () => {
+                    testAlertBtn.disabled = true;
+                    testAlertBtn.textContent = 'Sending...';
+                    try {
+                        const response = await fetch('/api/test-alert', { method: 'POST' });
+                        if (response.ok) {
+                            const data = await response.json();
+                            const mode = data.result && data.result.mode;
+                            if (mode === 'simulation') {
+                                alert('Test alert simulated (Twilio not configured / placeholder numbers). Check the Alert Log below.');
+                            } else {
+                                alert('Test alert sent! Check the Alert Log below and your officers\' phones.');
+                            }
+                            loadAlertLog();
+                        } else if (response.status === 401) {
+                            alert('You do not have permission to send test alerts. Please log in as an officer or admin.');
+                        } else {
+                            alert('Could not send test alert.');
+                        }
+                    } finally {
+                        testAlertBtn.disabled = false;
+                        testAlertBtn.textContent = 'Send Test Alert';
+                    }
+                });
+            }
+
+            async function loadAlertLog() {
+                const tbody = document.getElementById('alert-log-tbody');
+                if (!tbody) return;
+                const response = await fetch('/api/alert-log');
+                if (!response.ok) return;
+                const data = await response.json();
+                const log = data.alert_log || [];
+                if (log.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="5" class="empty-cell">No alerts yet</td></tr>';
+                    return;
+                }
+                tbody.innerHTML = log.map(a => `
+                    <tr>
+                        <td>${a.timestamp || ''}</td>
+                        <td>${a.officer || ''}</td>
+                        <td>${(a.channel || '').toUpperCase()}</td>
+                        <td>${a.status || ''}</td>
+                        <td>${a.sos_code || ''}</td>
+                    </tr>
+                `).join('');
+            }
+
+            const viewLogBtn = document.getElementById('view-alert-log-btn');
+            if (viewLogBtn) {
+                viewLogBtn.addEventListener('click', () => {
+                    const panel = document.getElementById('alert-log-panel');
+                    const isHidden = panel.style.display === 'none';
+                    panel.style.display = isHidden ? 'block' : 'none';
+                    viewLogBtn.textContent = isHidden ? 'Hide Alert Log' : 'View Alert Log';
+                    if (isHidden) loadAlertLog();
+                });
+            }
+
+            loadOfficers();
         }
 
         // Switch tab

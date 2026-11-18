@@ -1,0 +1,316 @@
+{
+  "reports": [
+    {
+      "type": "Cyclone",
+      "location": "Puri",
+      "severity": 9,
+      "priority": "CRITICAL",
+      "people": 3500,
+      "resources": "Pending Tactical Dispatch",
+      "date": "2026-10-01 15:07"
+    },
+    {
+      "type": "Coastal Surge Flood",
+      "location": "Kendrapara",
+      "severity": 8,
+      "priority": "HIGH",
+      "people": 2200,
+      "resources": "Pending Tactical Dispatch",
+      "date": "2026-10-01 15:07"
+    },
+    {
+      "type": "Flash Flood",
+      "location": "Baripada",
+      "severity": 6,
+      "priority": "MEDIUM",
+      "people": 1100,
+      "resources": "Pending Tactical Dispatch",
+      "date": "2026-10-01 15:07"
+    },
+    {
+      "type": "Mahanadi River Inundation",
+      "location": "Cuttack",
+      "severity": 7,
+      "priority": "HIGH",
+      "people": 1800,
+      "resources": "Pending Tactical Dispatch",
+      "date": "2026-10-01 15:07"
+    }
+  ],
+  "incidents": [
+    {
+      "id": "5cf5629a-86c9-496f-9819-7666049d0ddd",
+      "location": "Puri",
+      "type": "Cyclone",
+      "severity": 9,
+      "people_affected": 3500,
+      "status": "open",
+      "verified": true,
+      "source": "emergency_command",
+      "timestamp": "2026-10-01 15:07:06",
+      "lat": 19.8135,
+      "lng": 85.8312,
+      "priority": "CRITICAL",
+      "urgency_score": 100.0,
+      "urgency_breakdown": {
+        "base_priority_points": 90.0,
+        "severity_points": 7.2,
+        "people_affected_points": 7.0,
+        "total": 100.0
+      }
+    },
+    {
+      "id": "b28b561b-2a81-4e57-bcc4-313c3b61abce",
+      "location": "Kendrapara",
+      "type": "Coastal Surge Flood",
+      "severity": 8,
+      "people_affected": 2200,
+      "status": "open",
+      "verified": true,
+      "source": "emergency_command",
+      "timestamp": "2026-10-01 15:07:06",
+      "lat": 20.5015,
+      "lng": 86.4222,
+      "priority": "HIGH",
+      "urgency_score": 80.8,
+      "urgency_breakdown": {
+        "base_priority_points": 70.0,
+        "severity_points": 6.4,
+        "people_affected_points": 4.4,
+        "total": 80.8
+      }
+    },
+    {
+      "id": "0e9b5cf7-41bd-4ca9-95d8-b99d749e966b",
+      "location": "Baripada",
+      "type": "Flash Flood",
+      "severity": 6,
+      "people_affected": 1100,
+      "status": "open",
+      "verified": true,
+      "source": "emergency_command",
+      "timestamp": "2026-10-01 15:07:06",
+      "lat": 21.94,
+      "lng": 86.73,
+      "priority": "MEDIUM",
+      "urgency_score": 47.0,
+      "urgency_breakdown": {
+        "base_priority_points": 40.0,
+        "severity_points": 4.8,
+        "people_affected_points": 2.2,
+        "total": 47.0
+      }
+    },
+    {
+      "id": "216187c7-b62b-4c52-89a3-39dcd31a17ee",
+      "location": "Cuttack",
+      "type": "Mahanadi River Inundation",
+      "severity": 7,
+      "people_affected": 1800,
+      "status": "open",
+      "verified": true,
+      "source": "emergency_command",
+      "timestamp": "2026-10-01 15:07:06",
+      "lat": 20.4625,
+      "lng": 85.883,
+      "priority": "HIGH",
+      "urgency_score": 79.2,
+      "urgency_breakdown": {
+        "base_priority_points": 70.0,
+        "severity_points": 5.6,
+        "people_affected_points": 3.6,
+        "total": 79.2
+      }
+    }
+  ],
+  "resources": [
+    {
+      "id": "a902bdff-a5c1-4862-af1d-f8bdb401f460",
+      "location": "Cuttack",
+      "type": "Inflatable Motor Boat",
+      "quantity": 15,
+      "status": "available",
+      "timestamp": "2026-10-01 15:07:06",
+      "lat": 20.4625,
+      "lng": 85.883
+    },
+    {
+      "id": "5721cadf-634b-4930-b80e-210f09ca651b",
+      "location": "Cuttack",
+      "type": "Hydraulic Concrete Cutter",
+      "quantity": 10,
+      "status": "available",
+      "timestamp": "2026-10-01 15:07:06",
+      "lat": 20.4625,
+      "lng": 85.883
+    },
+    {
+      "id": "d00cbbda-aaf7-4d13-a9d2-3299d593cf93",
+      "location": "Cuttack",
+      "type": "Medical First Responder (MFR) Kit",
+      "quantity": 30,
+      "status": "available",
+      "timestamp": "2026-10-01 15:07:06",
+      "lat": 20.4625,
+      "lng": 85.883
+    },
+    {
+      "id": "11efbaa3-d528-47c0-a7fa-c288d8691cd9",
+      "location": "Chatrapur",
+      "type": "Inflatable Motor Boat",
+      "quantity": 12,
+      "status": "available",
+      "timestamp": "2026-10-01 15:07:06",
+      "lat": 19.3551,
+      "lng": 84.9859
+    },
+    {
+      "id": "9d30174a-38ae-4356-816a-687badb9493a",
+      "location": "Chatrapur",
+      "type": "High-Tower Inflatable Light",
+      "quantity": 8,
+      "status": "available",
+      "timestamp": "2026-10-01 15:07:06",
+      "lat": 19.3551,
+      "lng": 84.9859
+    },
+    {
+      "id": "bf33166e-4ab0-43a0-82ba-c82f0d8d0cb6",
+      "location": "Chatrapur",
+      "type": "Satellite Communication System",
+      "quantity": 5,
+      "status": "available",
+      "timestamp": "2026-10-01 15:07:06",
+      "lat": 19.3551,
+      "lng": 84.9859
+    },
+    {
+      "id": "93ce4283-94e1-48ad-899f-8ac5f2dc2215",
+      "location": "Jharsuguda",
+      "type": "Hydraulic Concrete Cutter",
+      "quantity": 8,
+      "status": "available",
+      "timestamp": "2026-10-01 15:07:06",
+      "lat": 21.8554,
+      "lng": 84.0062
+    },
+    {
+      "id": "1b277bf8-5a99-46b9-8520-2468a04d64b2",
+      "location": "Jharsuguda",
+      "type": "Mobile Water Purification Unit",
+      "quantity": 6,
+      "status": "available",
+      "timestamp": "2026-10-01 15:07:06",
+      "lat": 21.8554,
+      "lng": 84.0062
+    },
+    {
+      "id": "8f9a7574-5697-44e4-a21f-216256851329",
+      "location": "Baleswar",
+      "type": "Inflatable Motor Boat",
+      "quantity": 10,
+      "status": "available",
+      "timestamp": "2026-10-01 15:07:06",
+      "lat": 21.4964,
+      "lng": 86.929
+    },
+    {
+      "id": "12681358-4423-457f-8e5d-a25246877622",
+      "location": "Baleswar",
+      "type": "Food & Ration Packets",
+      "quantity": 500,
+      "status": "available",
+      "timestamp": "2026-10-01 15:07:06",
+      "lat": 21.4964,
+      "lng": 86.929
+    },
+    {
+      "id": "a3148a9c-f659-4b9d-abb9-81c776f7fb84",
+      "location": "Puri",
+      "type": "Medical First Responder (MFR) Kit",
+      "quantity": 25,
+      "status": "available",
+      "timestamp": "2026-10-01 15:07:06",
+      "lat": 19.8135,
+      "lng": 85.8312
+    },
+    {
+      "id": "aa877d4a-f53f-4201-a209-88a0f2a824db",
+      "location": "Puri",
+      "type": "Inflatable Motor Boat",
+      "quantity": 8,
+      "status": "available",
+      "timestamp": "2026-10-01 15:07:06",
+      "lat": 19.8135,
+      "lng": 85.8312
+    },
+    {
+      "id": "796b2dac-927a-4e94-b406-6c49aa113e85",
+      "location": "Kendrapara",
+      "type": "Mobile Water Purification Unit",
+      "quantity": 5,
+      "status": "available",
+      "timestamp": "2026-10-01 15:07:06",
+      "lat": 20.5015,
+      "lng": 86.4222
+    }
+  ],
+  "allocation_history": [
+    {
+      "id": "7c593e6e-8ccb-4515-b059-25276e5d4781",
+      "session_id": "8bf6c7e0-320e-4aac-92ed-4b694716e97a",
+      "incident_id": "adc835ba-c546-4bd1-aaeb-af4368b7069f",
+      "incident_location": "Bhubaneswar",
+      "incident_priority": "HIGH",
+      "resource_id": "0517dced-a318-4cb7-b9c9-9c5129a191f6",
+      "resource_location": "Puri",
+      "resource_type": "Food Kit",
+      "quantity_allocated": 25,
+      "urgency_score": 81.4,
+      "distance_km": 53.67,
+      "timestamp": "2026-10-01 15:07:06"
+    },
+    {
+      "id": "a84869bf-7596-48ef-9cde-f82c26d102eb",
+      "session_id": "8bf6c7e0-320e-4aac-92ed-4b694716e97a",
+      "incident_id": "172076c4-42ae-4ed5-9d7b-4aa54bcdbca7",
+      "incident_location": "Cuttack",
+      "incident_priority": "MEDIUM",
+      "resource_id": "0517dced-a318-4cb7-b9c9-9c5129a191f6",
+      "resource_location": "Puri",
+      "resource_type": "Food Kit",
+      "quantity_allocated": 15,
+      "urgency_score": 48.6,
+      "distance_km": 72.37,
+      "timestamp": "2026-10-01 15:07:06"
+    },
+    {
+      "id": "d3c1b633-305c-4ec8-94dc-4a0f06294611",
+      "session_id": "0d968766-7138-4d9c-b402-6e088dd6abd1",
+      "incident_id": "c630f4e2-3629-4bcb-a53c-db896ca30c97",
+      "incident_location": "Berhampur",
+      "incident_priority": "HIGH",
+      "resource_id": "9b00d55e-4179-4210-aa9d-00fdef5b8d5e",
+      "resource_location": "Berhampur",
+      "resource_type": "Fire",
+      "quantity_allocated": 3,
+      "urgency_score": 77.0,
+      "distance_km": 0.0,
+      "timestamp": "2026-10-01 15:07:06"
+    },
+    {
+      "id": "d1b01a44-f037-4010-83d7-1abe7cd67294",
+      "session_id": "0d968766-7138-4d9c-b402-6e088dd6abd1",
+      "incident_id": "cd7d797f-cb16-4d05-b02b-e5cafab24a59",
+      "incident_location": "Baleswar",
+      "incident_priority": "MEDIUM",
+      "resource_id": "0517dced-a318-4cb7-b9c9-9c5129a191f6",
+      "resource_location": "Puri",
+      "resource_type": "Food Kit",
+      "quantity_allocated": 2,
+      "urgency_score": 45.2,
+      "distance_km": 219.23,
+      "timestamp": "2026-10-01 15:07:06"
+    }
+  ]
+}

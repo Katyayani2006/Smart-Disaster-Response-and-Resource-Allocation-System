@@ -339,6 +339,11 @@ a {
     color: #166534;
 }
 
+.result-summary.low .priority-badge {
+    background: #dcfce7;
+    color: #15803d;
+}
+
 .result-summary.critical {
     border-left: 8px solid #dc2626;
 }
@@ -349,6 +354,10 @@ a {
 
 .result-summary.medium {
     border-left: 8px solid #22c55e;
+}
+
+.result-summary.low {
+    border-left: 8px solid #10b981;
 }
 
 .result-section p {
@@ -766,6 +775,11 @@ a {
     color: #991b1b;
 }
 
+.status-unverified {
+    background: #fef3c7;
+    color: #92400e;
+}
+
 /* Buttons - Small */
 .button-small {
     padding: 8px 16px;
@@ -845,5 +859,91 @@ a {
     .tab-button {
         padding: 10px 16px;
         font-size: 0.9rem;
+    }
+}
+
+/* Alert Error Box */
+.alert {
+    padding: 16px 20px;
+    border-radius: 12px;
+    margin-bottom: 24px;
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.alert-danger {
+    background: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #fca5a5;
+}
+
+/* Prediction Transparency Panels (confidence + feature importance bars) */
+.transparency-card {
+    margin-top: 28px;
+}
+
+.transparency-card h2 {
+    margin: 0 0 6px;
+    font-size: 1.15rem;
+}
+
+.transparency-note {
+    color: #64748b;
+    font-size: 0.85rem;
+    margin: 0 0 16px;
+}
+
+.bar-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+}
+
+.bar-label {
+    flex: 0 0 180px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: #0f172a;
+}
+
+.bar-track {
+    flex: 1;
+    background: #e2e8f0;
+    border-radius: 999px;
+    height: 12px;
+    overflow: hidden;
+}
+
+.bar-fill {
+    height: 100%;
+    border-radius: 999px;
+    transition: width 0.3s ease;
+}
+
+.bar-fill.confidence {
+    background: #2563eb;
+}
+
+.bar-fill.confidence.top {
+    background: #16a34a;
+}
+
+.bar-fill.importance {
+    background: #7c3aed;
+}
+
+.bar-value {
+    flex: 0 0 50px;
+    text-align: right;
+    font-weight: 700;
+    font-size: 0.85rem;
+    color: #334155;
+}
+
+@media (max-width: 640px) {
+    .bar-label {
+        flex-basis: 120px;
+        font-size: 0.8rem;
     }
 }
